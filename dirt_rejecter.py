@@ -25,9 +25,7 @@ def count_dirt(notebook):
                 ctr["outputs"] += 1
 
 
-def process_one_lecture(pathname, backup):
-    lecture_path = os.path.dirname(pathname)
-    notebook_name = os.path.basename(pathname)
+def process_one_lecture(pathname):
     notebook = nbformat.read(pathname, as_version=nbformat.NO_CONVERT)
 
     # Count how many meta, outs and outputs
@@ -44,24 +42,20 @@ class Counter(dict):
         self["execution_count"] = 0
 
     def summary(self):
-        if sum(list(self.values())) == 0:
-            print("\tMy congratulations, notebook is perfect!")
-        else:
-            if self['metadata'] != 0:
-                print(f"\tMetadata fixes: {self['metadata']}")
-            if self['outputs'] != 0:
-                print(f"\tOutputs fixes: {self['outputs']}")
-            if self['execution_count'] != 0:
-                print(f"\tExecution counts fixes: {self['execution_count']}")
+        s = ''
+        if self['metadata'] != 0:
+            s += f"\tMetadata found: {self['metadata']}"
+        if self['outputs'] != 0:
+            s += f"\tOutputs found: {self['outputs']}"
+        if self['execution_count'] != 0:
+            s += f"\tExecution counts found: {self['execution_count']}"
+        return s
 
     def reset(self):
         self.__init__()
 
     def is_notebook_dirty(self):
-        if sum(list(self.values())) == 0:
-            return False
-        else:
-            return True
+        return sum(list(self.values())) != 0
 
 
 def main():
@@ -69,20 +63,19 @@ def main():
         lecture_pathname = args.filepath
         if lecture_pathname.endswith('.ipynb'):
             ctr.reset()
-            res = process_one_lecture(lecture_pathname, backup=args.backup)
+            res = process_one_lecture(lecture_pathname)
             if res:
-                sys.exit(f"Found dirty lecture: {lecture_pathname}\nPleace, clear it by cleaner.py")
+                # sys.exit(f"Found dirty lecture: {lecture_pathname}\nPleace, clear it by cleaner.py")
+                raise Exception(f"Found dirty lecture: {lecture_pathname}\n{ctr.summary()}")
                 # ctr.summary()
     else:
         dirty_lectures = []
         for path, subdirs, files in os.walk(args.root if args.root is not None else "."):
             for name in files:
-                if name.endswith('.ipynb') and \
-                        ".ipynb_checkpoints" not in path and \
-                        not name.endswith('_backup.ipynb'):
+                if name.endswith('.ipynb') and ".ipynb_checkpoints" not in path:
                     lecture_pathname = os.path.join(path, name)
                     ctr.reset()
-                    res = process_one_lecture(lecture_pathname, backup=args.backup)
+                    res = process_one_lecture(lecture_pathname)
                     if res:
                         dirty_lectures.append(lecture_pathname)
                     # ctr.summary()
@@ -94,18 +87,11 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Script for cleaning notebooks.')
-    parser.add_argument('--backup', dest='backup', action='store_true',
-                        help="If provided, create a ipynb backup.")
-    parser.add_argument('--disable-warnings', dest='warnings', action='store_false',
-                        help="Script disable warnings like 'Probably local link found.'")
     parser.add_argument('--filepath', default=None,
                         help='Notebook filepath, if not provided, script processed all files in root, if root '
                              'not provided, processed all file in current directory.')
     parser.add_argument('--root', default=None,
                         help="""(default:"None") Processed all file in root folder and all subfolders.""")
-    parser.set_defaults(backup=False)
-    parser.set_defaults(warnings=True)
-
     args = parser.parse_args()
     ctr = Counter()
     main()
