@@ -2,36 +2,43 @@
 
 echo ---Dirty guard hook start---
 
-if ! command -v python &> /dev/null
-then
-    python3 dirt_rejecter.py
-    ret=$?
-    if [ $ret -ne 0 ]; then
-        exit $ret
+#if ! command -v python &> /dev/null
+#then
+#    python3 dirt_rejecter.py
+#    ret=$?
+#    if [ $ret -ne 0 ]; then
+#        exit $ret
+#    fi
+#else
+#    python dirt_rejecter.py
+#    ret=$?
+#    if [ $ret -ne 0 ]; then
+#        exit $ret
+#    fi
+#fi
+
+
+
+
+#!/bin/sh
+
+result=0
+while read FILE
+do
+    if [[ -f $FILE ]]; then
+        if [[ "$FILE" =~ ^.+(ipynb)$ ]]; then
+            python3 dirt_rejecter.py --filepath "$FILE"
+            if [ $? -ne 0 ]; then
+                result=1
+            fi
     fi
-else
-    python dirt_rejecter.py
-    ret=$?
-    if [ $ret -ne 0 ]; then
-        exit $ret
-    fi
+done <<EOT
+    $(git diff --cached --name-only)
+EOT
+
+if [ $result -ne 0 ]; then
+    echo "Aborting commit due to files with syntax errors" >&2
+    exit $result
 fi
-
-
-
-
-if git rev-parse --verify HEAD >/dev/null 2>&1
-then
-	against=HEAD
-else
-	# Initial commit: diff against an empty tree object
-	against=$(git hash-object -t tree /dev/null)
-fi
-
-# If you want to allow non-ASCII filenames set this variable to true.
-allownonascii=$(git config --type=bool hooks.allownonascii)
-
-# Redirect output to stderr.
-exec 1>&2
 
 echo ---Dirty guard hook ended---
