@@ -86,6 +86,7 @@ def main():
 
 
 if __name__ == "__main__":
+    print("Checking for cleanup")
     parser = argparse.ArgumentParser(description='Script for cleaning notebooks.')
     parser.add_argument('--filepath', default=None,
                         help='Notebook filepath, if not provided, script processed all files in root, if root '
