@@ -65,7 +65,7 @@ def main():
             ctr.reset()
             res = process_one_lecture(lecture_pathname)
             if res:
-                sys.exit("Found dirty lecture: {lecture_pathname}\nPleace, clear it by cleaner.py")
+                sys.exit("Found dirty notebooks: {lecture_pathname}\nPleace, clear it with cleaner.py")
                 # raise Exception(f"Found dirty lecture: {lecture_pathname}\n{ctr.summary()}")
                 # ctr.summary()
     else:
@@ -82,18 +82,20 @@ def main():
             if args.root is None:
                 break
         if len(dirty_lectures) != 0:
-            sys.exit(f"Found dirty lectures:\n\t" + "\n\t".join(dirty_lectures)+'\nPlease, clear it by cleaner.py')
+            sys.exit(f"Found dirty notebooks:\n\t" + "\n\t".join(dirty_lectures)+'\nPlease, clear it with cleaner.py')
 
 
 if __name__ == "__main__":
-    print("Checking for cleanup...")
-    parser = argparse.ArgumentParser(description='Script for cleaning notebooks.')
-    parser.add_argument('--filepath', default=None,
-                        help='Notebook filepath, if not provided, script processed all files in root, if root '
-                             'not provided, processed all file in current directory.')
-    parser.add_argument('--root', default=None,
-                        help="""(default:"None") Processed all file in root folder and all subfolders.""")
-    args = parser.parse_args()
-    ctr = Counter()
-    main()
-    sys.exit(0)
+    #print("Checking for cleanup...")
+    #parser = argparse.ArgumentParser(description='Script for cleaning notebooks.')
+    #parser.add_argument('--filepath', default=None,
+    #                    help='Notebook filepath, if not provided, script processed all files in root, if root '
+    #                         'not provided, processed all file in current directory.')
+    #parser.add_argument('--root', default=None,
+    #                    help="""(default:"None") Processed all file in root folder and all subfolders.""")
+    #args = parser.parse_args()
+    #ctr = Counter()
+    #main()
+    #print('Script ended')
+    # sys.exit()
+    pass
