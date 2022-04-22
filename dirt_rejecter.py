@@ -86,16 +86,15 @@ def main():
 
 
 if __name__ == "__main__":
-    #print("Checking for cleanup...")
-    #parser = argparse.ArgumentParser(description='Script for cleaning notebooks.')
-    #parser.add_argument('--filepath', default=None,
-    #                    help='Notebook filepath, if not provided, script processed all files in root, if root '
-    #                         'not provided, processed all file in current directory.')
-    #parser.add_argument('--root', default=None,
-    #                    help="""(default:"None") Processed all file in root folder and all subfolders.""")
-    #args = parser.parse_args()
-    #ctr = Counter()
-    #main()
-    #print('Script ended')
-    # sys.exit()
-    pass
+    print("Script start")
+    parser = argparse.ArgumentParser(description='Script for cleaning notebooks.')
+    parser.add_argument('--filepath', default=None,
+                        help='Notebook filepath, if not provided, script processed all files in root, if root '
+                             'not provided, processed all file in current directory.')
+    parser.add_argument('--root', default=None,
+                        help="""(default:"None") Processed all file in root folder and all subfolders.""")
+    args = parser.parse_args()
+    ctr = Counter()
+    main()
+    print('Script ended')
+    sys.exit()
