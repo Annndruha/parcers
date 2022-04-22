@@ -65,8 +65,8 @@ def main():
             ctr.reset()
             res = process_one_lecture(lecture_pathname)
             if res:
-                # sys.exit(f"Found dirty lecture: {lecture_pathname}\nPleace, clear it by cleaner.py")
-                raise Exception(f"Found dirty lecture: {lecture_pathname}\n{ctr.summary()}")
+                sys.exit("Found dirty lecture: {lecture_pathname}\nPleace, clear it by cleaner.py")
+                # raise Exception(f"Found dirty lecture: {lecture_pathname}\n{ctr.summary()}")
                 # ctr.summary()
     else:
         dirty_lectures = []
